@@ -55,8 +55,35 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Hide initials when images load
+function hideInitialsOnImageLoad() {
+    const contactImages = document.querySelectorAll('.contact-image');
+    contactImages.forEach(img => {
+        if (img.complete && img.naturalHeight !== 0) {
+            // Image already loaded
+            img.style.display = 'block';
+            const initial = img.parentElement.querySelector('.contact-initial');
+            if (initial) {
+                initial.style.display = 'none';
+            }
+        } else {
+            // Wait for image to load
+            img.addEventListener('load', function() {
+                this.style.display = 'block';
+                const initial = this.parentElement.querySelector('.contact-initial');
+                if (initial) {
+                    initial.style.display = 'none';
+                }
+            });
+        }
+    });
+}
+
 // Load images when page loads
-window.addEventListener('DOMContentLoaded', loadContactImages);
+window.addEventListener('DOMContentLoaded', function() {
+    loadContactImages();
+    hideInitialsOnImageLoad();
+});
 
 // Add scroll effect to navbar
 let lastScroll = 0;
