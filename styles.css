@@ -464,6 +464,10 @@ body {
     .phone-mockup {
         max-width: 250px;
     }
+    
+    .contact-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
 }
 
 @media (max-width: 480px) {
