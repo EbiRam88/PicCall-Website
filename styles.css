@@ -197,13 +197,18 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    border: 2px solid rgba(255, 255, 255, 0.2);
 }
 
-.contact-photo img {
+.contact-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
 }
 
 .contact-initial {
@@ -217,6 +222,10 @@ body {
 
 .contact-photo.has-image .contact-initial {
     display: none;
+}
+
+.contact-photo.has-image {
+    border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
 .contact-name {

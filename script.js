@@ -4,23 +4,40 @@ function loadContactImages() {
     
     contactPhotos.forEach(photo => {
         const imagePath = photo.getAttribute('data-image');
-        const formats = ['jpg', 'jpeg', 'png', 'webp'];
+        // Try PNG first since that's what we have
+        const formats = ['png', 'jpg', 'jpeg', 'webp'];
         let imageLoaded = false;
         
-        formats.forEach(format => {
+        const tryLoadImage = (format) => {
             if (imageLoaded) return;
             
             const img = new Image();
+            const imageUrl = `${imagePath}.${format}`;
+            
             img.onload = function() {
-                photo.style.backgroundImage = `url(${imagePath}.${format})`;
+                photo.style.backgroundImage = `url(${imageUrl})`;
                 photo.classList.add('has-image');
                 imageLoaded = true;
+                // Hide the initial when image loads
+                const initial = photo.querySelector('.contact-initial');
+                if (initial) {
+                    initial.style.display = 'none';
+                }
             };
+            
             img.onerror = function() {
-                // Image not found, keep the gradient background
+                // Try next format
+                const currentIndex = formats.indexOf(format);
+                if (currentIndex < formats.length - 1) {
+                    tryLoadImage(formats[currentIndex + 1]);
+                }
             };
-            img.src = `${imagePath}.${format}`;
-        });
+            
+            img.src = imageUrl;
+        };
+        
+        // Start with PNG
+        tryLoadImage('png');
     });
 }
 
