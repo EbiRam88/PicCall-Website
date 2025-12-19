@@ -1,3 +1,29 @@
+// Load contact images if available
+function loadContactImages() {
+    const contactPhotos = document.querySelectorAll('.contact-photo[data-image]');
+    
+    contactPhotos.forEach(photo => {
+        const imagePath = photo.getAttribute('data-image');
+        const formats = ['jpg', 'jpeg', 'png', 'webp'];
+        let imageLoaded = false;
+        
+        formats.forEach(format => {
+            if (imageLoaded) return;
+            
+            const img = new Image();
+            img.onload = function() {
+                photo.style.backgroundImage = `url(${imagePath}.${format})`;
+                photo.classList.add('has-image');
+                imageLoaded = true;
+            };
+            img.onerror = function() {
+                // Image not found, keep the gradient background
+            };
+            img.src = `${imagePath}.${format}`;
+        });
+    });
+}
+
 // Smooth scroll for navigation links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -11,6 +37,9 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         }
     });
 });
+
+// Load images when page loads
+window.addEventListener('DOMContentLoaded', loadContactImages);
 
 // Add scroll effect to navbar
 let lastScroll = 0;
