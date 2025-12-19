@@ -79,11 +79,6 @@ function hideInitialsOnImageLoad() {
     });
 }
 
-// Load images when page loads
-window.addEventListener('DOMContentLoaded', function() {
-    loadContactImages();
-    hideInitialsOnImageLoad();
-});
 
 // Add scroll effect to navbar
 let lastScroll = 0;
@@ -122,5 +117,83 @@ document.querySelectorAll('.feature-card, .step').forEach(el => {
     el.style.transform = 'translateY(20px)';
     el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     observer.observe(el);
+});
+
+// Contact card click interactions
+function setupContactInteractions() {
+    const contactCards = document.querySelectorAll('.contact-card');
+    
+    contactCards.forEach(card => {
+        const contactPhoto = card.querySelector('.contact-photo');
+        const callButton = card.querySelector('.call-button');
+        const callingOverlay = card.querySelector('.calling-overlay');
+        const contactName = card.getAttribute('data-contact');
+        
+        // Click on photo to show call button
+        contactPhoto.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            // Hide all other call buttons and overlays
+            contactCards.forEach(otherCard => {
+                if (otherCard !== card) {
+                    otherCard.classList.remove('selected');
+                    otherCard.querySelector('.call-button').style.display = 'none';
+                    otherCard.querySelector('.calling-overlay').style.display = 'none';
+                }
+            });
+            
+            // Toggle call button for this card
+            if (callButton.style.display === 'none') {
+                card.classList.add('selected');
+                callButton.style.display = 'flex';
+            } else {
+                card.classList.remove('selected');
+                callButton.style.display = 'none';
+            }
+        });
+        
+        // Click on call button to show calling state
+        callButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            callingOverlay.style.display = 'flex';
+            
+            // Update calling text with contact name
+            const callingText = callingOverlay.querySelector('.calling-text');
+            callingText.textContent = `Calling ${contactName}...`;
+            
+            // After 3 seconds, reset (for demo purposes)
+            setTimeout(() => {
+                callingOverlay.style.display = 'none';
+                callButton.style.display = 'none';
+                card.classList.remove('selected');
+            }, 3000);
+        });
+        
+        // Click on calling overlay to close
+        callingOverlay.addEventListener('click', function(e) {
+            e.stopPropagation();
+            callingOverlay.style.display = 'none';
+            callButton.style.display = 'none';
+            card.classList.remove('selected');
+        });
+    });
+    
+    // Click outside to close all
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.contact-card')) {
+            contactCards.forEach(card => {
+                card.classList.remove('selected');
+                card.querySelector('.call-button').style.display = 'none';
+                card.querySelector('.calling-overlay').style.display = 'none';
+            });
+        }
+    });
+}
+
+// Initialize contact interactions when page loads
+window.addEventListener('DOMContentLoaded', function() {
+    loadContactImages();
+    hideInitialsOnImageLoad();
+    setupContactInteractions();
 });
 
